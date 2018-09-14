@@ -1,6 +1,7 @@
 import { Observable } from 'tns-core-modules/data/observable';
 import { MediaPickerInterface, ImagePickerOptions, VideoPickerOptions, AudioPickerOptions, FilePickerOptions } from "./mediafilepicker.common";
 import * as app from 'tns-core-modules/application';
+import {MediaFilePickerOptions} from "./index";
 const permissions = require('nativescript-permissions');
 
 declare const java;
@@ -113,6 +114,52 @@ export class Mediafilepicker extends Observable implements MediaPickerInterface 
                 extensions[i] = options.extensions[i];
             }
         }
+
+        intent = new Intent(app.android.foregroundActivity, NormalFilePickActivity.class);
+
+        options.maxNumberFiles ? intent.putExtra(Constant.MAX_NUMBER, options.maxNumberFiles) : intent.putExtra(Constant.MAX_NUMBER, 99);
+
+        intent.putExtra(NormalFilePickActivity.SUFFIX, extensions);
+        pickerType = Constant.REQUEST_CODE_PICK_FILE;
+
+        this.callIntent(intent, pickerType);
+
+    }
+
+    /**
+     * openFilePicker
+     */
+    public openMediaPicker(params: MediaFilePickerOptions) {
+
+        let intent, pickerType, options = params.android, extensions;
+
+        if (options.extensions.length > 0) {
+
+            extensions = Array.create(java.lang.String, options.extensions.length);
+
+            for (let i = 0; i < options.extensions.length; i++) {
+                extensions[i] = options.extensions[i];
+            }
+        }
+
+        options.isNeedCamera ? intent.putExtra(VideoPickActivity.IS_NEED_CAMERA, true) : intent.putExtra(VideoPickActivity.IS_NEED_CAMERA, false);
+
+        options.maxNumberFiles ? intent.putExtra(Constant.MAX_NUMBER, options.maxNumberFiles) : intent.putExtra(Constant.MAX_NUMBER, 99);
+
+        options.isNeedFolderList ? intent.putExtra(VideoPickActivity.IS_NEED_FOLDER_LIST, true) : intent.putExtra(VideoPickActivity.IS_NEED_FOLDER_LIST, false);
+
+        if (options.maxDuration > 0) {
+            intent.putExtra(Constant.MAX_VIDEO_DURATION, options.maxDuration);
+        }
+
+        intent.putExtra(Constant.VIDEO_QUALITY, 1);
+
+        if (options.videoQuality === 0) {
+            intent.putExtra(Constant.VIDEO_QUALITY, 0);
+        }
+
+        pickerType = Constant.REQUEST_CODE_PICK_VIDEO;
+
 
         intent = new Intent(app.android.foregroundActivity, NormalFilePickActivity.class);
 

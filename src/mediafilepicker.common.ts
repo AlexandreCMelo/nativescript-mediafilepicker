@@ -3,6 +3,7 @@ export class MediaPickerInterface {
     openVideoPicker(params: VideoPickerOptions) { }
     openAudioPicker(params: AudioPickerOptions) { }
     openFilePicker(params: FilePickerOptions) { }
+    openMediaPicker(params: MediaFilePickerOptions) { }
     greet() { }
 }
 export interface ImagePickerOptions {
@@ -58,5 +59,24 @@ export interface FilePickerOptions {
     ios?: {
         extensions: Array<string>; // https://developer.apple.com/documentation/mobilecoreservices/uttype
         multipleSelection?: boolean;
+    };
+}
+
+export interface MediaFilePickerOptions {
+    android?: {
+        isNeedCamera?: boolean;
+        maxNumberFiles?: number;
+        isNeedFolderList?: boolean;
+        maxDuration?: number;
+        extensions?: Array<string>; // https://developer.apple.com/documentation/mobilecoreservices/uttype
+        videoQuality?: number;
+    };
+    ios?: {
+        isCaptureMood?: boolean;
+        maxNumberFiles?: number;
+        extensions?: Array<string>; // https://developer.apple.com/documentation/mobilecoreservices/uttype
+        multipleSelection?: boolean;
+        videoMaximumDuration?: number;
+        allowedVideoQualities?: Array<string>; // https://developer.apple.com/documentation/avfoundation/avcapturesessionpreset?language=objc
     };
 }

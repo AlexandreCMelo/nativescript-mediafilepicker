@@ -1,5 +1,5 @@
 import { Observable } from 'tns-core-modules/data/observable';
-import { MediaPickerInterface, ImagePickerOptions, VideoPickerOptions, AudioPickerOptions, FilePickerOptions } from "./mediafilepicker.common";
+import { MediaPickerInterface, ImagePickerOptions, VideoPickerOptions, AudioPickerOptions, FilePickerOptions, MediaFilePickerOptions } from "./mediafilepicker.common";
 import * as utils from "tns-core-modules/utils/utils";
 import * as fs from "tns-core-modules/file-system/file-system";
 
@@ -97,6 +97,60 @@ export class Mediafilepicker extends Observable implements MediaPickerInterface 
                 controller.allowedVideoQualities = this.collections.jsArrayToNSArray(options.allowedVideoQualities);
             }
 
+        }
+
+        if (!options.isCaptureMood) {
+            PHPhotoLibrary.requestAuthorization(function (status) {
+
+                if (status === PHAuthorizationStatus.Authorized) {
+                    t.presentViewController(controller);
+                } else {
+                    t.msg = "Permission Error!";
+                    t.notify({
+                        eventName: 'error',
+                        object: t
+                    });
+                }
+            });
+
+        } else {
+            this.presentViewController(controller);
+        }
+    }
+
+    /**
+     * openVideoPicker
+     */
+    public openMediaPicker(params: MediaFilePickerOptions) {
+
+        let options = params.ios, t = this;
+
+        let controller = IQMediaPickerController.alloc().init();
+        controller.delegate = this._mediaPickerIQDeligate;
+        controller.mediaTypes = this.collections.jsArrayToNSArray(params.ios.extensions);
+        controller.sourceType = IQMediaPickerControllerSourceType.Library;
+
+        if (options.isCaptureMood) {
+            controller.sourceType = IQMediaPickerControllerSourceType.CameraMicrophone;
+        }
+
+        if (options.maxNumberFiles > 0) {
+            controller.allowsPickingMultipleItems = true;
+            controller.maximumItemCount = options.maxNumberFiles;
+        }
+
+        if (options.videoMaximumDuration > 0) {
+            controller.videoMaximumDuration = options.videoMaximumDuration;
+        }
+
+        if (options.isCaptureMood) {
+            controller.sourceType = IQMediaPickerControllerSourceType.CameraMicrophone;
+        }
+
+        if (options.allowedVideoQualities) {
+            if (options.allowedVideoQualities.length > 0) {
+                controller.allowedVideoQualities = this.collections.jsArrayToNSArray(options.allowedVideoQualities);
+            }
         }
 
         if (!options.isCaptureMood) {

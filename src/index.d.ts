@@ -6,6 +6,7 @@ export declare class Mediafilepicker extends Observable implements MediaPickerIn
     openVideoPicker(params: VideoPickerOptions): void;
     openAudioPicker(params: AudioPickerOptions): void;
     openFilePicker(params: FilePickerOptions): void;
+    openMediaPicker(params: MediaFilePickerOptions): void;
     copyPHImageToAppDirectory(rawData: any, fileName: any): Promise<{}>;
     copyPHVideoToAppDirectory(urlAsset: any, fileName: any): Promise<{}>;
     convertPHImageToUIImage(rawData: any): Promise<{}>;
@@ -60,6 +61,22 @@ export interface FilePickerOptions {
     };
     ios?: {
         extensions: Array<string>; // https://developer.apple.com/documentation/mobilecoreservices/uttype
+        multipleSelection?: boolean;
+    };
+}
+export interface MediaFilePickerOptions {
+    android?: {
+        isNeedCamera?: boolean;
+        maxNumberFiles?: number;
+        isNeedFolderList?: boolean;
+        maxDuration?: number;
+        extensions?: Array<string>; // https://developer.apple.com/documentation/mobilecoreservices/uttype
+        videoQuality?: number;
+    };
+    ios?: {
+        isCaptureMood?: boolean;
+        maxNumberFiles?: number;
+        extensions?: Array<string>; // https://developer.apple.com/documentation/mobilecoreservices/uttype
         multipleSelection?: boolean;
     };
 }
